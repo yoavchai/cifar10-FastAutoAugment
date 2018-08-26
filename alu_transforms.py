@@ -8,8 +8,8 @@ from PIL import Image
 import math as math
 
 from basenet import BaseNet
-from basenet.lr import LRSchedule
-from basenet.helpers import to_numpy, set_seeds
+from lr import LRSchedule
+from helpers import to_numpy, set_seeds
 
 import torch
 from torch import nn

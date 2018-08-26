@@ -14,8 +14,8 @@ from torch import nn
 from torch.nn import functional as F
 from torch.autograd import Variable
 
-from .helpers import to_numpy
-from .lr import LRSchedule
+from helpers import to_numpy
+from lr import LRSchedule
 
 TORCH_VERSION_4 = '0.4' == torch.__version__[:3]
 

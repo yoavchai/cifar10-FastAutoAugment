@@ -30,28 +30,21 @@ from torchvision import transforms, datasets
 from datetime import datetime
 from my_aug import *
 
-OUTPUT_DIR = os.path.join('.','output')
-USE_CUDA = True if torch.cuda.is_available() else False
-time_stamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-out_dir = os.path.join(OUTPUT_DIR, time_stamp)
-if not os.path.exists(out_dir):
-    os.mkdir(out_dir)
-csv_path = os.path.join(out_dir ,'result_stats.csv')
-training_csv_path = os.path.join(out_dir, 'training_stats.csv')
 
+OUTPUT_DIR = os.path.join('.','output')
 # --
 # CLI
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--epochs', type=int, default=150)
-    parser.add_argument('--extra', type=int, default=15)
-    parser.add_argument('--burnout', type=int, default=15)
+    parser.add_argument('--epochs', type=int, default=250)
+    parser.add_argument('--extra', type=int, default=30)
+    parser.add_argument('--burnout', type=int, default=30)
     parser.add_argument('--lr-schedule', type=str, default='linear_cycle')
     parser.add_argument('--lr-init', type=float, default=0.1)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
     parser.add_argument('--momentum', type=float, default=0.9)
-    parser.add_argument('--batch-size', type=int, default=64) #TODO try other values
+    parser.add_argument('--batch-size', type=int, default=64)
     parser.add_argument('--seed', type=int, default=789)
     parser.add_argument('--download', action="store_true")
     parser.add_argument('--lr_resume', type=float, default=0.0015)
@@ -75,6 +68,16 @@ set_seeds(args.seed)
 
 if not os.path.exists(args.out_dir):
     os.mkdir(args.out_dir)
+
+# if not os.path.exists(OUTPUT_DIR):
+#     os.mkdir(OUTPUT_DIR)
+USE_CUDA = True if torch.cuda.is_available() else False
+time_stamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+out_dir = os.path.join(OUTPUT_DIR, time_stamp)
+if not os.path.exists(out_dir):
+    os.mkdir(out_dir)
+csv_path = os.path.join(out_dir ,'result_stats.csv')
+training_csv_path = os.path.join(out_dir, 'training_stats.csv')
 
 print('cifar10.py: making dataloaders...', file=sys.stderr)
 
@@ -265,18 +268,18 @@ for epoch in range(args.epochs + args.extra + args.burnout):
     }))
     sys.stdout.flush()
 
-    if epoch > args.epochs - 5:
+    #if epoch > args.epochs - 5:
 
-        test = model.eval_epoch(dataloaders, 'test')
-        print(json.dumps({
-            "test_acc"  : float(test['acc']),
-            "loss"      : float(test['loss']),
-            "time": time() - t,
-        }))
+    test = model.eval_epoch(dataloaders, 'test')
+    print(json.dumps({
+        "test_acc"  : float(test['acc']),
+        "loss"      : float(test['loss']),
+        "time": time() - t,
+    }))
 
 
-        with open(csv_path, 'a') as f: #use for new file  with open(csv_path, 'w') as f:
-            f.write('{},{},{},{} \n'.format(epoch, float(train['loss']), float(test['acc']), time() - t))
+        # with open(csv_path, 'a') as f: #use for new file  with open(csv_path, 'w') as f:
+        #     f.write('{},{},{},{} \n'.format(epoch, float(train['loss']), float(test['acc']), time() - t))
 
 
 
