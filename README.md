@@ -1,5 +1,6 @@
 # cifar10-FastAutoAugment
 
+cifar10 validation acc of 95.95% (average of 5 runs).
 
 
 Installation:
